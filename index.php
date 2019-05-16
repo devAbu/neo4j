@@ -9,7 +9,7 @@ $client = ClientBuilder::create()
     /* ->addConnection('bolt', 'bolt://neo4j:password@localhost:7687') // Example for BOLT connection configuration (port is optional) */
     ->build();
 
-$result = $client->run('MATCH (n:Artist) RETURN n');
+$result = $client->run('MATCH (n:Artist) RETURN n, ID(n) as ID');
 // a result always contains a collection (array) of Record objects
 
 // get all records
@@ -18,19 +18,30 @@ $records = $result->getRecords();
 foreach($result->getRecords() as $record){
     $name = $record->values()[0]->get('name');
     $year = $record->values()[0]->get('year');
+    $ID = $record->values()[1];
     $age = 2019 - $year;
-    echo    '<table style="border-spacing: 10px;border: 1px solid red">
+    echo    ' <form action="delete.php" method="post">
+                <input type="number" value="'.$ID.'" name="ID" hidden>
+                <input type="text" value="'.$name.'" name="name" hidden>
+                <input type="number" value="'.$year.'" name="year" hidden>
+            <table style="border-spacing: 10px;border: 1px solid red">
                 <tr>
                     <th style=" padding: 10px;border-collapse: collapse; text-align: center; border: 1px solid red">Name</th>
                     <th style="padding: 10px; text-align: center;border-collapse: collapse;border: 1px solid red">Year born</th>
                     <th style="padding: 10px; text-align: center;border-collapse: collapse;border: 1px solid red">Age</th>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; text-align: center;border-collapse: collapse;border: 1px solid red"> '. $name .' </td>
-                    <td style="padding: 10px; text-align: center;border-collapse: collapse;border: 1px solid red"> '. $year .' </td>
+                    <td style="padding: 10px; text-align: center;border-collapse: collapse;border: 1px solid red">'. $name .'</td>
+                    <td style="padding: 10px; text-align: center;border-collapse: collapse;border: 1px solid red" name="year"> '. $year .' </td>
                     <td style="padding: 10px; text-align: center;border-collapse: collapse;border: 1px solid red"> '. $age .' </td>
                 </tr>
-            </table>';
+                <tr>
+                    <td>
+                        <button type="submit" id="delete">Delete</button>
+                    </td>
+                </tr>
+            </table>
+            </form>';
     /* echo '<strong>'.$name.' '.$year.'</strong><br/>';
     echo '<br/>'; */
 }

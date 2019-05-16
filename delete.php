@@ -9,17 +9,19 @@ $client = ClientBuilder::create()
     /* ->addConnection('bolt', 'bolt://neo4j:password@localhost:7687') // Example for BOLT connection configuration (port is optional) */
     ->build();
 
+$ID = $_REQUEST['ID'];
 $name = $_REQUEST['name'];
 $year = $_REQUEST['year'];
 
-/* echo $name; 
+/* echo $ID;
+echo $name;
 echo $year; */
 
-
-$result = $client->run('CREATE (n:Artist { name: "'.$name.'", year: '.$year.' })');
+$result = $client->run("MATCH (n) where ID(n) =".$ID."  DELETE n");
 
 if($result){
-    echo 'dodano';
+    echo 'obrisano';
     header("refresh: 2, url=index.php");
 }
+
 ?>
